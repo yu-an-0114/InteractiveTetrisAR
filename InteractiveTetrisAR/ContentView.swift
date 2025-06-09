@@ -9,19 +9,19 @@ import SwiftUI
 import RealityKit
 
 struct ContentView: View {
-  @StateObject private var gameVM = GameViewModel(difficulty: .normal)
+  @EnvironmentObject var settingsVM: SettingsViewModel
+  @StateObject private var gameVM = GameViewModel()
   var body: some View {
-    GameARView(gameVM: gameVM)
+      GameARView(gameVM: gameVM, difficulty: settingsVM.gestureSensitivity)
       .edgesIgnoringSafeArea(.all)
       .onAppear {
-        // 如果你有封裝 startGame、reset 之類方法，在這裡呼叫
-        gameVM.pauseGame()   // 先確保是暫停狀態
-        gameVM.spawnTetrominoes()
-        gameVM.startAutoDrop()
+        // 啟動遊戲並開始自動下落
+        gameVM.startGame()
       }
   }
 }
 
 #Preview {
     ContentView()
+        .environmentObject(SettingsViewModel())
 }
